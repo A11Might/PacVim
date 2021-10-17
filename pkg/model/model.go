@@ -47,23 +47,38 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "0":
 			m.Player.ParseToBeginning()
 
+		case "^":
+			m.Player.ParseToBeginningFor6()
+
 		case "$":
 			m.Player.ParseToEnd()
 
 		case "e":
 			m.Player.ParseWordEnd()
 
+		case "E":
+			m.Player.ParseWordEndForE()
+
 		case "b":
 			m.Player.ParseWordBackward()
 
+		case "B":
+			m.Player.ParseWordBackwardForB()
+
 		case "w":
 			m.Player.ParseWordForward()
+
+		case "W":
+			m.Player.ParseWordForwardForW()
 
 		case "g":
 			m.Player.ParseToUpping()
 
 		case "G":
 			m.Player.ParseToDowning()
+
+		case "ctrl+c":
+			return m, tea.Quit
 		}
 	case move:
 		if game.CanMove() {
@@ -77,32 +92,33 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) View() string {
 	var builder strings.Builder
-	for i, line := range game.GlobMaze.Graph {
-		for j, chr := range line {
-			if color := game.GlobMaze.Paint[i][j]; color == util.Wall {
-				builder.WriteString(termenv.String(string(chr)).Bold().String())
-			} else if color == util.Water {
-				builder.WriteString(termenv.String(string(chr)).Foreground(util.GetColor(util.Blue)).String())
-			} else if color == util.Faint {
-				builder.WriteString(termenv.String(string(chr)).Faint().String())
-			} else if color == util.White {
-				builder.WriteString(string(chr))
-			} else if color == util.Player {
-				builder.WriteString(termenv.String(string(chr)).Background(util.GetColor(util.BrightGreen)).String())
-			} else {
-				builder.WriteString(termenv.String(string(chr)).Foreground(util.GetColor(game.GlobMaze.Paint[i][j])).String())
+	for _, line := range game.GlobMaze.Graph {
+		for _, cell := range line {
+			style := termenv.String(string(cell.Char))
+			switch cell.Color {
+			case util.WallColor:
+				builder.WriteString(style.Bold().String())
+			case util.WaterColor:
+				builder.WriteString(style.Foreground(util.GetColor(util.Blue)).String())
+			case util.Faint:
+				builder.WriteString(style.Faint().String())
+			case util.PlayerColor:
+				builder.WriteString(style.Background(util.GetColor(util.BrightGreen)).String())
+			default:
+				builder.WriteString(style.Foreground(util.GetColor(cell.Color)).String())
 			}
 		}
 		builder.WriteString("\n")
 	}
+	builder.WriteString(fmt.Sprintf("\nPoints: %d/%d", m.Player.Points, game.TotalPoints))
 
 	switch game.WonGame {
 	case util.Lost:
-		return "You Lost"
+		return "You Lost\nPress Ctrl + C to quit game"
 
 	case util.Win:
-		return "You Win"
+		return "You Win\nPress Ctrl + C to quit game"
 	}
 
-	return builder.String() + fmt.Sprintf("\nPoints: %d", m.Player.Points)
+	return builder.String()
 }

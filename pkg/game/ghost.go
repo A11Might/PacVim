@@ -8,7 +8,6 @@ import (
 
 type Ghost struct {
 	Avatar
-	CanMove bool
 }
 
 func SpawnGhost() *Ghost {
@@ -21,16 +20,16 @@ func SpawnGhost() *Ghost {
 		Avatar: Avatar{
 			X:           a,
 			Y:           b,
-			LetterUnder: GlobMaze.Graph[a][b],
-			ColorUnder:  GlobMaze.Paint[a][b],
+			LetterUnder: GlobMaze.Graph[a][b].Char,
+			ColorUnder:  GlobMaze.Graph[a][b].Color,
 			IsPlayer:    false,
 			Portrait:    util.GhostPortrait,
 			Color:       util.Ghost},
 	}
 
 	// 在地图上出生
-	GlobMaze.Graph[a][b] = ghost.Portrait
-	GlobMaze.Paint[a][b] = ghost.Color
+	GlobMaze.Graph[a][b].Char = ghost.Portrait
+	GlobMaze.Graph[a][b].Color = ghost.Color
 
 	return ghost
 }
