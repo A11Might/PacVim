@@ -27,17 +27,17 @@ func Born() *Avatar {
 	player := &Avatar{
 		X:           a,
 		Y:           b,
-		LetterUnder: GlobMaze.Graph[a][b],
+		LetterUnder: GlobMaze.Graph[a][b].Char,
 		IsPlayer:    true,
 		Points:      0,
 		Portrait:    util.PlayerPortrait,
 		Lives:       3,
-		Color:       util.Player,
+		Color:       util.PlayerColor,
 	}
 
 	// 在地图上出生
-	GlobMaze.Graph[a][b] = player.Portrait
-	GlobMaze.Paint[a][b] = player.Color
+	GlobMaze.Graph[a][b].Char = player.Portrait
+	GlobMaze.Graph[a][b].Color = player.Color
 
 	return player
 }
@@ -63,9 +63,9 @@ func (t *Avatar) MoveTo(a, b int) bool {
 		}
 
 		// 正常行走
-		if GlobMaze.Point[a][b] == 1 {
+		if GlobMaze.Graph[a][b].Point == 1 {
 			t.Points++
-			GlobMaze.Point[a][b]--
+			GlobMaze.Graph[a][b].Point--
 		}
 
 		// 移动，将走过的字符变成绿色
@@ -73,7 +73,7 @@ func (t *Avatar) MoveTo(a, b int) bool {
 		t.X = a
 		t.Y = b
 		t.LetterUnder = curChar
-		WriteAtWithColor(t.X, t.Y, t.Portrait, util.Player)
+		WriteAtWithColor(t.X, t.Y, t.Portrait, util.PlayerColor)
 
 		// 判断游戏是否结束
 		if t.Points >= TotalPoints {
@@ -94,7 +94,7 @@ func (t *Avatar) MoveTo(a, b int) bool {
 		// 走过去
 		t.X = a
 		t.Y = b
-		t.ColorUnder = GlobMaze.Paint[a][b]
+		t.ColorUnder = GlobMaze.Graph[a][b].Color
 		WriteAtWithColor(a, b, t.Portrait, util.Ghost)
 	}
 
@@ -106,8 +106,7 @@ func (t *Avatar) MoveUp() bool {
 		return false
 	}
 
-	t.MoveTo(t.X-1, t.Y)
-	return true
+	return t.MoveTo(t.X-1, t.Y)
 }
 
 func (t *Avatar) MoveDown() bool {
@@ -115,8 +114,7 @@ func (t *Avatar) MoveDown() bool {
 		return false
 	}
 
-	t.MoveTo(t.X+1, t.Y)
-	return true
+	return t.MoveTo(t.X+1, t.Y)
 }
 
 func (t *Avatar) MoveLeft() bool {
@@ -124,8 +122,7 @@ func (t *Avatar) MoveLeft() bool {
 		return false
 	}
 
-	t.MoveTo(t.X, t.Y-1)
-	return true
+	return t.MoveTo(t.X, t.Y-1)
 }
 
 func (t *Avatar) MoveRight() bool {
@@ -133,8 +130,7 @@ func (t *Avatar) MoveRight() bool {
 		return false
 	}
 
-	t.MoveTo(t.X, t.Y+1)
-	return true
+	return t.MoveTo(t.X, t.Y+1)
 }
 
 // ParseWordEnd for e
@@ -177,6 +173,30 @@ func (t *Avatar) endForSymbol() bool {
 	return false
 }
 
+// ParseWordEndForE for E
+func (t *Avatar) ParseWordEndForE() bool {
+	// 走到下一个单词的开头
+	for t.LetterUnder != ' ' {
+		if !t.MoveRight() {
+			return false
+		}
+	}
+	for t.LetterUnder == ' ' {
+		if !t.MoveRight() {
+			return false
+		}
+	}
+
+	// 走到单词的末尾
+	for CharAt(t.X, t.Y+1) != ' ' {
+		if !t.MoveRight() {
+			return false
+		}
+	}
+
+	return true
+}
+
 // ParseWordBackward for b
 func (t *Avatar) ParseWordBackward() bool {
 	// 向左走
@@ -216,6 +236,30 @@ func (t *Avatar) beginForSymbol() bool {
 	return false
 }
 
+// ParseWordBackwardForB for B
+func (t *Avatar) ParseWordBackwardForB() bool {
+	// 走到上一个单词的末尾
+	for t.LetterUnder != ' ' {
+		if !t.MoveLeft() {
+			return false
+		}
+	}
+	for t.LetterUnder == ' ' {
+		if !t.MoveLeft() {
+			return false
+		}
+	}
+
+	// 走到单词的开头
+	for CharAt(t.X, t.Y-1) != ' ' {
+		if !t.MoveLeft() {
+			return false
+		}
+	}
+
+	return true
+}
+
 // ParseWordForward for w
 func (t *Avatar) ParseWordForward() bool {
 	// 向右走
@@ -244,6 +288,23 @@ func (t *Avatar) endCondition() bool {
 		return true
 	}
 	return false
+}
+
+// ParseWordForwardForW for W
+func (t *Avatar) ParseWordForwardForW() bool {
+	// 走到下一个单词的开头之前
+	for t.LetterUnder != ' ' {
+		if !t.MoveRight() {
+			return false
+		}
+	}
+	for t.LetterUnder == ' ' {
+		if !t.MoveRight() {
+			return false
+		}
+	}
+
+	return true
 }
 
 // ParseToEnd for $
@@ -285,6 +346,17 @@ func (t *Avatar) ParseToBeginning() bool {
 	return true
 }
 
+// ParseToBeginningFor6 for ^
+func (t *Avatar) ParseToBeginningFor6() bool {
+	t.ParseToBeginning()
+	// 踩到空，则移到第一个单词的词首
+	if t.LetterUnder == ' ' {
+		t.ParseWordForward()
+	}
+	return true
+}
+
+// ParseToUpping for gg
 func (t *Avatar) ParseToUpping() bool {
 	// 同理
 	a, b := 0, t.Y
@@ -304,6 +376,7 @@ func (t *Avatar) ParseToUpping() bool {
 	return true
 }
 
+// ParseToDowning for G
 func (t *Avatar) ParseToDowning() bool {
 	// 同理
 	a, b := GlobMaze.rows-1, t.Y

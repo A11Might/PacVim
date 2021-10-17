@@ -18,6 +18,7 @@ func main() {
 }
 
 func initialModel() model.Model {
+	game.InitGame()
 	return model.Model{
 		Player: game.Player,
 		Ghost:  game.Ghost1,
