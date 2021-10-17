@@ -1,8 +1,6 @@
 # PacVim in Go
 
-> PacVim is a game that teaches you vim commands.
-> 
-> You must move pacman (the green cursor) to highlight each word on the gameboard while avoiding the ghosts (in red).
+使用 vim 指令移动绿色 P 来躲避红色 G 从而练习 vim。
 
 ## 安装
 
@@ -10,41 +8,40 @@
 
 `go get github.com/A11Might/PacVim`
 
-- 老用户
+- 老用户，安装最新版本
 
-`go get github.com/A11Might/PacVim@v0.0.4`
+`go get github.com/A11Might/PacVim@v0.0.1`
 
 ## 使用
 
 键入 `pacvim` 来开始游戏
 
+*可能刚进入游戏就异常啦，可以尝试多试几次*
+
 ## 游玩方法
 
-> The objective of PacVim is very similar to PacMan.
-> 
-> You must run over all the characters on the screen while avoiding the ghosts (red `G`).
-> 
-> PacVim has two special obstacles:
->
-> 1. You cannot move into the walls (yellow color).  You must use vim motions to jump over them.
->
-> 2. If you step on a tilde character (cyan `~`), you lose!
+游戏方法和吃豆人类似，移动绿色 P 来躲避红色 G。
 
-<h4>List of Implemented Commands</h4>
+P 有两个障碍：
+1. 不能走到墙上，可以通过指令穿墙
+2. 踩到蓝色 ~，结束游戏
 
-| key | what it does |
+**实现的指令**
+
+| 按键 | 操作 |
 | --- | --- |
-| h   | move left |
-| j   | move down |
-| k   | move up |
-| l   | move right |
-| w   | move forward to next word beginning |
-| e   | move forward to next word ending |
-| b   | move backward to next word beginning |
-| $   | move to the end of the line |
-| 0   | move to the beginning of the line |
-| gg  | move to the beginning of the first line |
-| G   | move to the beginning of the last line |
+| h   | 左移 |
+| j   | 下移 |
+| k   | 上移 |
+| l   | 右移 |
+| w   | 移到下一个单词的开头 |
+| e   | 移到下一个单词的结尾 |
+| b   | 移到上一个单词的开头 |
+| $   | 移到真行尾 |
+| 0   | 移到真行首 |
+| gg  | 移到第一行 |
+| G   | 移到最后一行 |
+| Ctrl C | 退出游戏 |
 
 ## 开发日志
 
@@ -54,6 +51,12 @@
   - 地图上的幽灵（G）可以动啦
   - 新增 h,j,k,l,w,e,b,$,0,gg,G，注意 0,$ 可以穿墙
   - 走过所有字符可以赢得游戏啦
+
+- 20211017 
+  - 重构部分代码，看起来更面向对象
+  - 开始游戏随机 10 张地图中的一张
+  - 新增 Ctrl C 退出游戏
+  - 今天一个人吃海底捞，难过:(
 
 ## 碎碎恋
 

@@ -1,5 +1,21 @@
 package game
 
+var MapIndex map[int]string
+
+func init() {
+	MapIndex = make(map[int]string)
+	MapIndex[0] = Map0
+	MapIndex[1] = Map1
+	MapIndex[2] = Map2
+	MapIndex[3] = Map3
+	MapIndex[4] = Map4
+	MapIndex[5] = Map5
+	MapIndex[6] = Map6
+	MapIndex[7] = Map7
+	MapIndex[8] = Map8
+	MapIndex[9] = Map9
+}
+
 const (
 	Map0 = `########################
 #Every #body is!#~a    #

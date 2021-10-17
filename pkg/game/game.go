@@ -1,6 +1,7 @@
 package game
 
 import (
+	"math/rand"
 	"time"
 
 	"github.com/A11Might/PacVim/pkg/util"
@@ -17,10 +18,9 @@ var (
 	TotalPoints int
 )
 
-func init() {
-	GlobMaze.Graph = util.StringToMatrix(Map0)
-	GlobMaze.Paint = util.WhiteMatrix(GlobMaze.Graph)
-	GlobMaze.Point, TotalPoints = util.PointMatrix(GlobMaze.Graph)
+func InitGame() {
+	GlobMaze.InitMaze(MapIndex[rand.Intn(10)])
+	TotalPoints = GlobMaze.totalPoints
 	GlobMaze.rows = len(GlobMaze.Graph)
 	GlobMaze.cols = len(GlobMaze.Graph[0])
 	Player = Born()
