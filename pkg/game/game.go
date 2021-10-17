@@ -1,6 +1,7 @@
 package game
 
 import (
+	"math/rand"
 	"time"
 
 	"github.com/A11Might/PacVim/pkg/util"
@@ -17,15 +18,13 @@ var (
 	TotalPoints int
 )
 
-func init() {
-	GlobMaze.Graph = util.StringToMatrix(Map0)
-	GlobMaze.Paint = util.WhiteMatrix(GlobMaze.Graph)
-	GlobMaze.Point, TotalPoints = util.PointMatrix(GlobMaze.Graph)
-	GlobMaze.rows = len(GlobMaze.Graph)
-	GlobMaze.cols = len(GlobMaze.Graph[0])
+func InitGame() {
+	GlobMaze.InitMaze(MapIndex[rand.Intn(10)])
+	TotalPoints = GlobMaze.totalPoints
 	Player = Born()
 	Ghost1 = SpawnGhost()
-	MoveOrNot = true
+	//Ghost1 = new(Ghost)
+	MoveOrNot = true // 幽灵是否移动，用来控制幽灵移动速度的标志位
 }
 
 func GetPlayerPosition() (int, int) {
