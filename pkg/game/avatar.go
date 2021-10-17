@@ -27,17 +27,17 @@ func Born() *Avatar {
 	player := &Avatar{
 		X:           a,
 		Y:           b,
-		LetterUnder: GlobMaze.Graph[a][b],
+		LetterUnder: GlobMaze.Graph[a][b].Char,
 		IsPlayer:    true,
 		Points:      0,
 		Portrait:    util.PlayerPortrait,
 		Lives:       3,
-		Color:       util.Player,
+		Color:       util.PlayerColor,
 	}
 
 	// 在地图上出生
-	GlobMaze.Graph[a][b] = player.Portrait
-	GlobMaze.Paint[a][b] = player.Color
+	GlobMaze.Graph[a][b].Char = player.Portrait
+	GlobMaze.Graph[a][b].Color = player.Color
 
 	return player
 }
@@ -63,9 +63,9 @@ func (t *Avatar) MoveTo(a, b int) bool {
 		}
 
 		// 正常行走
-		if GlobMaze.Point[a][b] == 1 {
+		if GlobMaze.Graph[a][b].Point == 1 {
 			t.Points++
-			GlobMaze.Point[a][b]--
+			GlobMaze.Graph[a][b].Point--
 		}
 
 		// 移动，将走过的字符变成绿色
@@ -73,7 +73,7 @@ func (t *Avatar) MoveTo(a, b int) bool {
 		t.X = a
 		t.Y = b
 		t.LetterUnder = curChar
-		WriteAtWithColor(t.X, t.Y, t.Portrait, util.Player)
+		WriteAtWithColor(t.X, t.Y, t.Portrait, util.PlayerColor)
 
 		// 判断游戏是否结束
 		if t.Points >= TotalPoints {
@@ -94,7 +94,7 @@ func (t *Avatar) MoveTo(a, b int) bool {
 		// 走过去
 		t.X = a
 		t.Y = b
-		t.ColorUnder = GlobMaze.Paint[a][b]
+		t.ColorUnder = GlobMaze.Graph[a][b].Color
 		WriteAtWithColor(a, b, t.Portrait, util.Ghost)
 	}
 

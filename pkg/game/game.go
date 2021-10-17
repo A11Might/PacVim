@@ -18,9 +18,8 @@ var (
 )
 
 func init() {
-	GlobMaze.Graph = util.StringToMatrix(Map0)
-	GlobMaze.Paint = util.WhiteMatrix(GlobMaze.Graph)
-	GlobMaze.Point, TotalPoints = util.PointMatrix(GlobMaze.Graph)
+	GlobMaze.InitMaze(Map0)
+	TotalPoints = GlobMaze.totalPoints
 	GlobMaze.rows = len(GlobMaze.Graph)
 	GlobMaze.cols = len(GlobMaze.Graph[0])
 	Player = Born()
