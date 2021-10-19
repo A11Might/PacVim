@@ -34,7 +34,7 @@ const (
 	Win        = 1
 	Lost       = -1
 	Gaming     = 0
-	GhostSpeed = time.Second / 3
+	GhostSpeed = time.Second / 3 // 幽灵移动速度，time.Second / 3 代表每秒移动 3 步
 )
 
 func init() {

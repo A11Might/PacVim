@@ -34,8 +34,8 @@ func SpawnGhost() *Ghost {
 	return ghost
 }
 
+// Think 贪心算法
 func (g *Ghost) Think() {
-	//time.Sleep(1 * time.Second)
 	up := eval(g.X-1, g.Y)
 	down := eval(g.X+1, g.Y)
 	left := eval(g.X, g.Y-1)

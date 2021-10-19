@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/A11Might/PacVim/pkg/game"
 	"github.com/A11Might/PacVim/pkg/util"
@@ -15,17 +16,16 @@ type Model struct {
 	Ghost  *game.Ghost
 }
 
-type move struct {
-}
+type tickMsg time.Time
 
-func autoMove() tea.Cmd {
-	return func() tea.Msg {
-		return move{}
-	}
+func tick() tea.Cmd {
+	return tea.Tick(util.GhostSpeed, func(t time.Time) tea.Msg {
+		return tickMsg(t)
+	})
 }
 
 func (m Model) Init() tea.Cmd {
-	return autoMove()
+	return tick()
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -80,11 +80,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c":
 			return m, tea.Quit
 		}
-	case move:
-		if game.CanMove() {
-			m.Ghost.Think()
-		}
-		return m, autoMove()
+
+	case tickMsg:
+		m.Ghost.Think()
+		return m, tick()
 	}
 
 	return m, nil
