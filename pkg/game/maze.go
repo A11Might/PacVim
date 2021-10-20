@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/A11Might/PacVim/pkg/util"
+	"github.com/beefsack/go-astar"
 )
 
 type Maze struct {
@@ -17,6 +18,47 @@ type Cell struct {
 	Char  rune
 	Color int
 	Point int
+	X     int
+	Y     int
+}
+
+func (c *Cell) PathNeighbors() []astar.Pather {
+	neighbors := make([]astar.Pather, 0)
+	for _, offset := range [][]int{
+		{-1, 0},
+		{1, 0},
+		{0, -1},
+		{0, 1},
+	} {
+		a, b := c.X+offset[0], c.Y+offset[1]
+		if a >= 0 && a < Rows && b >= 0 && b < Cols {
+			neighbors = append(neighbors, GlobMaze.Graph[a][b])
+		}
+	}
+	return neighbors
+}
+
+func (c *Cell) PathNeighborCost(to astar.Pather) float64 {
+	if to.(*Cell).Char == '#' {
+		return 1000
+	}
+	return 1
+}
+
+// PathEstimatedCost 使用曼哈顿距离作为启发式算法
+func (c *Cell) PathEstimatedCost(to astar.Pather) float64 {
+	toT := to.(*Cell)
+	absX := toT.X - c.X
+	if absX < 0 {
+		absX = -absX
+	}
+	absY := toT.Y - c.Y
+	if absY < 0 {
+		absY = -absY
+	}
+	r := float64(absX + absY)
+
+	return r
 }
 
 func (m *Maze) InitMaze(str string) {
@@ -27,6 +69,8 @@ func (m *Maze) InitMaze(str string) {
 		m.Graph[i] = make([]*Cell, len(lines[i]))
 		for j, chr := range lines[i] {
 			m.Graph[i][j] = new(Cell)
+			m.Graph[i][j].X = i
+			m.Graph[i][j].Y = j
 			m.Graph[i][j].Char = chr
 			// 初始化墙和水的颜色
 			switch chr {
@@ -49,6 +93,8 @@ func (m *Maze) InitMaze(str string) {
 
 	m.rows = len(m.Graph)
 	m.cols = len(m.Graph[0])
+	Rows = m.rows
+	Cols = m.cols
 	m.totalPoints = totalPoints
 }
 

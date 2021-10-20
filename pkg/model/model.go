@@ -82,7 +82,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 	case tickMsg:
-		m.Ghost.Think()
+		//m.Ghost.Think()
+		m.Ghost.ThinkMore()
 		return m, tick()
 	}
 
