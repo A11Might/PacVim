@@ -1,8 +1,6 @@
 package game
 
-import (
-	"math/rand"
-)
+import "math/rand"
 
 var (
 	GlobMaze Maze
@@ -10,6 +8,8 @@ var (
 	Ghost1   *Ghost
 
 	WonGame     int // 0-init, -1-lost, 1-win
+	Rows        int
+	Cols        int
 	TotalPoints int
 )
 
@@ -23,4 +23,8 @@ func InitGame() {
 
 func GetPlayerPosition() (int, int) {
 	return Player.X, Player.Y
+}
+
+func GetGhostPosition() (int, int) {
+	return Ghost1.X, Ghost1.Y
 }

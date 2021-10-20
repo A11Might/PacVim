@@ -4,6 +4,7 @@ import (
 	"math"
 
 	"github.com/A11Might/PacVim/pkg/util"
+	"github.com/beefsack/go-astar"
 )
 
 type Ghost struct {
@@ -53,6 +54,18 @@ func (g *Ghost) Think() {
 
 	case right:
 		g.MoveTo(g.X, g.Y+1)
+	}
+}
+
+// ThinkMore A* 算法
+func (g *Ghost) ThinkMore() {
+	a, b := GetGhostPosition()  // from
+	c, d := GetPlayerPosition() // to
+	path, _, found := astar.Path(GlobMaze.Graph[a][b], GlobMaze.Graph[c][d])
+	if found {
+		// path 是反的
+		next := path[len(path)-2].(*Cell)
+		g.MoveTo(next.X, next.Y)
 	}
 }
 
