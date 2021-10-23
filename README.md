@@ -72,6 +72,9 @@ P 有两个障碍：
 - 20211020
   - 使用 [A* 算法](https://github.com/beefsack/go-astar) 替代原来的贪心算法，现在 G 不会给墙角鬼畜啦
 
+- 20211023
+  - 新增 [A* 算法 tutorial](./assets/a-star.md)
+
 ## 碎碎恋
 
 参考项目 [PacVim](https://github.com/jmoon018/PacVim)，还没抄完，开发中...
